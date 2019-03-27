@@ -1,12 +1,14 @@
 import matplotlib.pyplot as plt
 import glob
 
+## Find for data in data/ file
 data_files = glob.glob('data/*')
-# print(data_files)
 
+## List found files
 for i, fn in enumerate(data_files):
     print('[',i+1,'] ', fn)
 
+## Select file
 sel = None  
 while sel not in range(len(data_files)):
     sel = int(input('Select file >')) - 1
@@ -14,6 +16,7 @@ while sel not in range(len(data_files)):
 ## Open data file
 f = open(data_files[sel], 'r')
 
+## HYPERPARAMETERS 
 DATA_LINE = 3
 ZERO_LINE = 0
 
@@ -34,7 +37,6 @@ for item in zero_line:
         pass
 
 print("Tara, zero value: ", tara)
-
 
 ## Convert to integers and append to int_data list
 int_data = data
