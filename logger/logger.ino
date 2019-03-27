@@ -82,7 +82,7 @@ void setup()
 	myFile.println(millis());
 	myFile.println("From lecture position:");
  
-	Serial.println("Hasi!!");
+	Serial.println("Start!");
 	for (int f=0;f<800;f++)
 	{
 		myFile.print(scale.read());
@@ -93,7 +93,7 @@ void setup()
 	myFile.print("Final timestamp: ");
 	myFile.println(millis());
 	myFile.close(); 
-	Serial.print("Pograma finalizado.Pueden retirar la txartela SD");	
+	Serial.print("Program finalized");	
 } 
 
 void loop() 
