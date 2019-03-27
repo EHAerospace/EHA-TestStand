@@ -1,12 +1,21 @@
 import matplotlib.pyplot as plt
+import glob
 
-file_name = "test_data.txt"
+data_files = glob.glob('data/*')
+# print(data_files)
+
+for i, fn in enumerate(data_files):
+    print('[',i+1,'] ', fn)
+
+sel = None  
+while sel not in range(len(data_files)):
+    sel = int(input('Select file >')) - 1
+
+## Open data file
+f = open(data_files[sel], 'r')
 
 DATA_LINE = 3
 ZERO_LINE = 0
-
-## Open data file
-f = open(file_name, 'r')
 
 ## Parse data
 for i, line in enumerate(f):
