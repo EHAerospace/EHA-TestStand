@@ -29,14 +29,14 @@ for i, line in enumerate(f):
 
 f.close() ## Close data file
 
-## Parse tara value
+## Parse tare value
 for item in zero_line:
     try:
-        tara = int(item)
+        tare = int(item)
     except:
         pass
 
-print("Tara, zero value: ", tara)
+print("Tare, zero value: ", tare)
 
 ## Convert to integers and append to int_data list
 int_data = data
@@ -56,7 +56,7 @@ del[int_data[len(int_data)-1]]
 ## Offset
 #offseted_data = int_data
 #for i, val in enumerate(int_data):
-#    if val <= tara:
+#    if val <= tare:
 #        offseted_data[i] = 0        
 #
 #int_data = offseted_data
