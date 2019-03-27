@@ -1,105 +1,101 @@
-#include "HX711.h"
+#include <HX711.h>
 #include <SPI.h>
 #include <SD.h>
 
-/* El lector SD card conectado como sigue:
- *  MOSI - pin 11
- *  MISO - pin 12
- *  CLK - pin 13
- *  CS - pin 4
-*/
+/* Connect the SD card reader like follows: 
+ *	MOSI - pin 11
+ *	MISO - pin 12
+ *	PIN_CLOCK - pin 13
+ *	CS - pin 4
+ */
 
-/* Conectar el pulsador de inicio y el buzzer como sigue:
- *  Botón activación - pin 10
- *  LED - pin 5
- *  Buzzer - pin 6
-  */
+/* Connect the start button and the buzzer like follows:
+ *	Activation button - pin 10
+ *	LED - pin 5
+ *	Buzzer - pin 6
+ */
 
-#define buttonPin 4   //  Pin para el botón activación.
-#define ledPin 5
-#define buzzPin 6
-#define igniterPin 7   //  OJO!!! pin que va a la etapa de potencia del ignitor!!!
-#define frecBuzz 440
-#define powerPin 8
+#define PIN_BUTTON 4				// Activation button pin
+#define PIN_LED 5	
+#define PIN_BUZZ 6
+#define PIN_IGNITER 7	 			// Ignition power stage pin
+#define PIN_POWER 8
+#define PIN_CLOCK	2				// Clock pin
+#define PIN_DATAOUT	3	 			// Data output pin
+#define BUZZ_FREQUENCY 440
 
-//Parte sensor empuje HX711
-//Pines  2, 3 y 8
-#define CLK  2    // Pin para el reloj
-#define DOUT  3   // Pin para salida de datos
-long dato; //Variable que recoge la lectura del peso
-//Se inicializa el HX711
-HX711 scale(DOUT, CLK);
+// Initializes HX711
+HX711 scale(PIN_DATAOUT, PIN_CLOCK);
 
-//Parte SD pines 
-#define SD_CS_PIN 10
+// Part of the SD pins
+#define PIN_SDCS 10
 
 File myFile;
 
-void setup() {
-  Serial.begin(38400); 
-  while (!Serial) {
-    ; // Esperamos conexión por USB.
-  }
-  Serial.print("Inicializando txartela SD ...");
+void setup() 
+{
+	Serial.begin(38400); 
+	while (!Serial);
+	Serial.print("Initializing SD card");
 
-  if (!SD.begin(SD_CS_PIN)) {
-    Serial.println("Fallo en la inicialización! NO GO!");
-    return;
-  }
-  Serial.println("Txartela inicializada! Cinco Segundos de retardo");
-  delay(5000);
+	if (!SD.begin(PIN_SDCS)) 
+	{
+		Serial.println("Initialization failed!");
+		return;
+	}
+	Serial.println("SD card initialized! Five second delay");
+	delay(5000);
+	
+	
+	pinMode(PIN_BUTTON, INPUT); 
+	pinMode(PIN_IGNITER, OUTPUT); 
+	pinMode(PIN_LED, OUTPUT);
+	pinMode(PIN_BUZZ, OUTPUT);
+	pinMode(PIN_POWER, OUTPUT);
+	digitalWrite(PIN_POWER,HIGH);
+	Serial.println("HX711 Rocket Motor Dynamometer, V.5"); 
+	Serial.println("Put the nozzle looking upwards; Introduce the the ignite into the nozzle. Danger Zone!!"); 
+	delay(2000); 
+	Serial.println("Calibrating the stands sensor."); 
+	scale.set_scale(); 
+	scale.tare();      //Reset the scale to 0 
+	long zeroFactor = scale.read_average(); //Get a baseline reading 
+	Serial.print("This is the reference value: "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects. 
+	Serial.println(zeroFactor);
 
-  pinMode(buttonPin, INPUT); 
-  pinMode(igniterPin, OUTPUT); 
-  pinMode(ledPin, OUTPUT);
-  pinMode(buzzPin, OUTPUT);
-  pinMode(powerPin, OUTPUT);
-  digitalWrite(powerPin,HIGH);
-  Serial.println("HX711 Rocket Motor Dynamometer, V.5"); 
-  Serial.println("Poner la tobera mirando arriba ;) Introducir el ignitor el la tobera. Fuera de la zoana de peligro!!!"); 
-  delay(2000); 
-  Serial.println("Procediendo a calibrar el stand. Tomando lecturas de peso en reposo"); 
-  scale.set_scale(); 
-  scale.tare(); //Reset the scale to 0 
-  long zero_factor = scale.read_average(); //Get a baseline reading 
-  Serial.print("Este valor es de referencia: "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects. 
-  Serial.println(zero_factor);
- /* while (digitalRead(buttonPin==HIGH)){
-    Serial.print("Pulsar el botón RUN para comenzar la secuencia de 15 tonos para comenzar a leer valores durante 10 segundos:");
-    
-  }
-  */
-  for (int f=0;f<10;f++) {
-    digitalWrite(ledPin,HIGH);
-    tone(buzzPin,frecBuzz,500);
-    digitalWrite(ledPin,LOW);
-    noTone(buzzPin);
-    delay(500);
-  }
-  Serial.println();
-  Serial.println("Abriendo el fichero Kohete.txt para logging...");
-  
-  myFile= SD.open("Kohete.txt", FILE_WRITE);
-  myFile.print("FactMor de cero: ");
-  myFile.println(zero_factor);
-  myFile.print("Timestamp inicio: ");
-  myFile.println(millis());
-  myFile.println("Desde esta posicion lekturas:");
+	for (int f = 0; f < 10; f++) 
+	{
+		digitalWrite(PIN_LED,HIGH);
+		tone(PIN_BUZZ,BUZZ_FREQUENCY,500);
+		digitalWrite(PIN_LED,LOW);
+		noTone(PIN_BUZZ);
+		delay(500);
+	}
+	
+	Serial.println();
+	Serial.println("Opening the data.txt archive for logging...");
+	
+	myFile= SD.open("data.txt", FILE_WRITE);
+	myFile.print("Tare: ");
+	myFile.println(zeroFactor);
+	myFile.print("Starting timestamp: ");
+	myFile.println(millis());
+	myFile.println("From lecture position:");
  
-  Serial.println("Hasi!!");
-  for (int f=0;f<800;f++){
-    dato=scale.read();
-    myFile.print(dato);
-    myFile.print(":");
-//    Serial.print(dato);
-//    Serial.print(":");
-    }
- // closes the file:
-  myFile.print("Timestamp final: ");
-  myFile.println(millis());
-  myFile.close(); 
-  Serial.print("Pograma finalizado.Pueden retirar la txartela SD");  
+	Serial.println("Start!");
+	for (int f=0;f<800;f++)
+	{
+		myFile.print(scale.read());
+		myFile.print(":");
+	}
+	
+ 	// Closes the file:
+	myFile.print("Final timestamp: ");
+	myFile.println(millis());
+	myFile.close(); 
+	Serial.print("Program finalized");	
 } 
 
-void loop() { 
+void loop() 
+{ 
 } 
