@@ -10,7 +10,7 @@ for i, fn in enumerate(data_files):
 
 ## Select file
 sel = None  
-while sel not in range(len(data_files)):
+while sel not in range(len(data_files)) and type(sel) != int:
     sel = int(input('Select file >')) - 1
 
 ## Open data file
