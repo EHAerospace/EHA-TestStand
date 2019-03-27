@@ -1,1 +1,1 @@
-# eha-test-stand
+# EHA-TestStand
