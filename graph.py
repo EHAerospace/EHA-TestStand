@@ -11,7 +11,10 @@ for i, fn in enumerate(data_files):
 ## Select file
 sel = None  
 while sel not in range(len(data_files)) and type(sel) != int:
-    sel = int(input('Select file >')) - 1
+    try: 
+        sel = int(input('Select file >')) - 1
+    except:
+        pass
 
 ## Open data file
 f = open(data_files[sel], 'r')
