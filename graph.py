@@ -1,11 +1,7 @@
 import matplotlib.pyplot as plt
 
-# file_name = "bi_pulso.TXT"
-file_name = "KOHETE.TXT"
+file_name = "test_data.txt"
 
-# file_name = "zero.TXT"
-# file_name = "bi_pulso.TXT"
- 
 DATA_LINE = 3
 ZERO_LINE = 0
 
