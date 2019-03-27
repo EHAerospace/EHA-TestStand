@@ -1,1 +1,1 @@
--e git+https://github.com/bogde/HX711#egg=bogde
+-e git+https://github.com/bogde/HX711#egg=HX711
