@@ -1,1 +1,1 @@
--e git://github.com/bogde/HX711.git
+-e git+git://github.com/bogde/HX711.git
