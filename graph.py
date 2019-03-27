@@ -65,8 +65,10 @@ del[int_data[len(int_data)-1]]
 #int_data = offseted_data
 #####################################
 
+## Apply tare
 for i, d in enumerate(int_data):
-    int_data[i] = abs(d)
+    int_data[i] = abs(d)-abs(tare) # With tare
+    # int_data[i] = abs(d) # No tare
 
 plt.plot(range(len(int_data)), int_data, 'y')
 
@@ -83,8 +85,8 @@ a = 1
 yy = lfilter(b,a, int_data)
 yy = abs(yy)
 
-plt.plot(range(len(int_data)), yy, 
-         linewidth=2, linestyle="-", c="b")  # smooth by filter
+# plt.plot(range(len(int_data)), yy, 
+#          linewidth=2, linestyle="-", c="b")  # smooth by filter
 
 
 ### PLOT DATA ###
