@@ -32,35 +32,48 @@ HX711 scale(PIN_DATAOUT, PIN_CLOCK);
 
 File myFile;
 
-void setup() 
+void setup_peripherals()
 {
+	// Setup the Serial
 	Serial.begin(38400); 
 	while (!Serial);
-	Serial.print("Initializing SD card");
-
+	Serial.print("Serial initialized.");
+	
+	// Setup SD card	
+	Serial.print("Initializing SD card...");
 	if (!SD.begin(PIN_SDCS)) 
 	{
-		Serial.println("Initialization failed!");
+		Serial.println(" Initialization failed!");
 		return;
 	}
-	Serial.println("SD card initialized! Five second delay");
-	delay(5000);
+	Serial.println("Done.");
 	
-	
+	// Setup pins
+	Serial.print("Setting pin modes...");
 	pinMode(PIN_BUTTON, INPUT); 
 	pinMode(PIN_IGNITER, OUTPUT); 
 	pinMode(PIN_LED, OUTPUT);
 	pinMode(PIN_BUZZ, OUTPUT);
 	pinMode(PIN_POWER, OUTPUT);
 	digitalWrite(PIN_POWER,HIGH);
-	Serial.println("HX711 Rocket Motor Dynamometer, V.5"); 
+	Serial.println(" Done.");
+}
+
+void setup() 
+{
+	setup_peripherals();
+	
 	Serial.println("Put the nozzle looking upwards; Introduce the the ignite into the nozzle. Danger Zone!!"); 
-	delay(2000); 
-	Serial.println("Calibrating the stands sensor."); 
+	Serial.println("Waiting 3 seconds..");
+	delay(3000); 
+	
+	// Prepare the scale
+	Serial.print("Calibrating sensor..."); 
 	scale.set_scale(); 
 	scale.tare();      //Reset the scale to 0 
 	long zeroFactor = scale.read_average(); //Get a baseline reading 
-	Serial.print("This is the reference value: "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects. 
+	Serial.println(" Done.");
+	Serial.print("ReferenceValue = "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects. 
 	Serial.println(zeroFactor);
 
 	for (int f = 0; f < 10; f++) 
@@ -73,15 +86,18 @@ void setup()
 	}
 	
 	Serial.println();
-	Serial.println("Opening the data.txt archive for logging...");
+	Serial.print("Creating log file...");
 	
+	// Create the file and add the header
 	myFile= SD.open("data.txt", FILE_WRITE);
 	myFile.print("Tare: ");
 	myFile.println(zeroFactor);
 	myFile.print("Starting timestamp: ");
 	myFile.println(millis());
 	myFile.println("From lecture position:");
- 
+	Serial.println(" Done.");
+	
+	// Take samples of the sensor and save it on the SD card
 	Serial.println("Start!");
 	for (int f=0;f<800;f++)
 	{
