@@ -15,13 +15,12 @@
  	Buzzer - pin 6
 */
 
-#define PIN_ACTIVATION_BUTTON 4				// Activation button pin
+#define PIN_ACTIVATION_SIGNAL 4
 #define PIN_LED 5
 #define PIN_BUZZ 6
-#define PIN_IGNITER 7	 			// Ignition power stage pin
 #define PIN_POWER 8
-#define PIN_CLOCK	2				// Clock pin
-#define PIN_DATAOUT	3	 			// Data output pin
+#define PIN_CLOCK	2
+#define PIN_DATAOUT	3
 #define BUZZ_FREQUENCY 440
 
 // Part of the SD pins
@@ -45,8 +44,7 @@ void setup_peripherals()
 
   // Setup pins
   Serial.print("Setting pin modes...");
-  pinMode(PIN_ACTIVATION_BUTTON, INPUT);
-  pinMode(PIN_IGNITER, OUTPUT);
+  pinMode(PIN_ACTIVATION_SIGNAL, INPUT);
   pinMode(PIN_LED, OUTPUT);
   pinMode(PIN_BUZZ, OUTPUT);
   pinMode(PIN_POWER, OUTPUT);
@@ -82,12 +80,8 @@ void setup()
 
   setup_peripherals();
 
-  Serial.println("Put the nozzle looking upwards; Introduce the the ignite into the nozzle. Danger Zone!!");
-  Serial.println("Waiting 3 seconds..");
-  delay(3000);
-
   // Prepare the scale and log the calculated scale factor to the serial
-  Serial.print("Calibrating sensor...");
+  Serial.println("Calibrating sensor...");
   scale.set_scale();
   scale.tare();      //Reset the scale to
   long zeroFactor = scale.read_average(); //Get a baseline reading
@@ -110,8 +104,10 @@ void setup()
   file.println("From lecture position:");
   Serial.println(" Done.");
 
-  // Take samples of the sensor and save it on the SD card
-  Serial.println("Start!");
+  // Wait until the activation signal is on, and take the specified samples
+  Serial.println("Waiting until the start signal is on...");
+  while(digitalRead(PIN_ACTIVATION_SIGNAL) == LOW);
+  Serial.println("Signal recieved, starting sampling routine");
   take_samples(scale, file, 800);
 
   // Closes the file:
