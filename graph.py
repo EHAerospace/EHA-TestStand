@@ -51,46 +51,12 @@ for i, item in enumerate(data):
 
 del[int_data[len(int_data)-1]]
 
-#####################################
-
-# plt.plot(range(len(int_data)), int_data, 'y')
-# plt.bar(range(len(int_data)), int_data)
-
-## Offset
-#offseted_data = int_data
-#for i, val in enumerate(int_data):
-#    if val <= tare:
-#        offseted_data[i] = 0        
-#
-#int_data = offseted_data
-#####################################
-
 ## Apply tare
 for i, d in enumerate(int_data):
     int_data[i] = abs(d)-abs(tare) # With tare
-    # int_data[i] = abs(d) # No tare
+    int_data[i] /= 20000 * 9.8 # *20000 to convert to Kh¡g and *9.8 for Newtopns
 
 plt.plot(range(len(int_data)), int_data, 'y')
-
-from scipy.signal import lfilter
-
-## 80Hz
-n = 27  # the larger n is, the smoother curve will be
-## 10Hz
-# n = 5
-
-b = [1.0 / n] * n
-a = 1
-
-yy = lfilter(b,a, int_data)
-yy = abs(yy)
-
-# plt.plot(range(len(int_data)), yy, 
-#          linewidth=2, linestyle="-", c="b")  # smooth by filter
-
-
-### PLOT DATA ###
-#plt.plot(range(len(int_data)), offseted_data, 'r')
 plt.xlabel("Lecture")
-plt.ylabel("Sensor value")
+plt.ylabel("Newtons")
 plt.show()
