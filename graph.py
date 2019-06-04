@@ -54,9 +54,10 @@ del[int_data[len(int_data)-1]]
 ## Apply tare
 for i, d in enumerate(int_data):
     int_data[i] = abs(d)-abs(tare) # With tare
-    int_data[i] /= 20000 * 9.8 # *20000 to convert to Kh¡g and *9.8 for Newtopns
+    int_data[i] /= 20000 # *20000 to convert to Kh¡g and *9.8 for Newtopns
 
 plt.plot(range(len(int_data)), int_data, 'y')
+plt.grid()
 plt.xlabel("Lecture")
 plt.ylabel("Newtons")
 plt.show()
