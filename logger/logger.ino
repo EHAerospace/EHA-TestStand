@@ -32,25 +32,29 @@ public:
 	unsigned char total_meditions;
 	unsigned char number_seconds;
 
+	settings_t()
+	{
+		this.total_meditions = total_meditions;
+		this.number_seconds = number_seconds;	
+	}
+
 	int get_samples()
 	{
 		return number_seconds * 80;	
 	}
-};
 
+	static settings_t get_default()
+	{
+		settings_t result;
+		result.total_meditions = 0;
+		result.number_seconds = 5;
+
+		return result;
+	}
+};
 
 settings_t get_settings()
 {
-	File settings_file = SD.open("settings.settings", FILE_READ);
-	unsigned char total_meditions = settings_file.read();
-	unsigned char number_seconds = settings_file.read();
-
-	if(!SD.exists("meditions/"))
-	{
-		Serial.println("There are no meditions, another folder will be created!");
-		SD.mkdir("meditions");
-		total_meditions = 0;
-	}
 	
 	return {total_meditions, number_seconds};
 }
@@ -109,7 +113,7 @@ void setup()
 
 	setup_peripherals();
 
-	settings_t settings = get_settings();
+	settings_t settings = settings_t::get_default();
 	
 	// Prepare the scale and log the calculated scale factor to the serial
 	Serial.println("Calibrating sensor...");
