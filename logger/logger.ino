@@ -29,12 +29,12 @@
 String get_filename()
 {
 	unsigned int i = 0;
-	while(SD.exists(String("meditions/data") + String(i) + String(".txt")))
+	while(SD.exists(String("data") + String(i) + String(".txt")))
 	{
 		i++;
 	}
-
-	return String("meditions/data") + String(i) + String(".txt");
+        Serial.println(String("filename: data") + String(i));
+	return String("data") + String(i) + String(".txt");
 }
 
 void setup_peripherals()
@@ -42,13 +42,13 @@ void setup_peripherals()
 	// Setup the Serial
 	Serial.begin(38400);
 	while (!Serial);
-	Serial.print("Serial initialized.");
+	Serial.println("Serial initialized.");
 
 	// Setup SD card
 	Serial.print("Initializing SD card...");
 	if (!SD.begin(PIN_SDCS))
 	{
-		Serial.println(" Initialization failed!");
+		Serial.println(" Failed!");
 		return;
 	}
 	Serial.println("Done.");
@@ -88,7 +88,8 @@ void setup()
 {
 	// Initializes HX711
 	HX711 scale(PIN_DATAOUT, PIN_CLOCK);
-
+  
+        // Sets up the peripherals 
 	setup_peripherals();
 
 	// Prepare the scale and log the calculated scale factor to the serial
