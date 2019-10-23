@@ -59,5 +59,5 @@ for i, d in enumerate(int_data):
 plt.plot(range(len(int_data)), int_data, 'y')
 plt.grid()
 plt.xlabel("Lecture")
-plt.ylabel("Newtons")
+plt.ylabel("Kgf")
 plt.show()
