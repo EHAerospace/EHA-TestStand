@@ -97,7 +97,9 @@ void setup_peripherals()
 	pinMode(PIN_LED, OUTPUT);
 	pinMode(PIN_BUZZ, OUTPUT);
 	pinMode(PIN_POWER, OUTPUT);
-	digitalWrite(PIN_POWER, HIGH);
+
+	digitalWrite(PIN_POWER, LOW);
+
 	Serial.println(" Done.");
 }
 
@@ -243,6 +245,7 @@ void loop() {
 
             // OK LAUNCHING & start logger
             Serial.println("Launch GO");
+            digitalWrite(PIN_POWER, HIGH); // Start ignition
             logger();
 
             while (1);
