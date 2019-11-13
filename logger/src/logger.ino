@@ -52,13 +52,14 @@ void blink()
     delay(200);
 }
 
-void err() {
-    tone(TONE, 1500, 50);
-    digitalWrite(LED, HIGH);
-    delay(50);
-    noTone(TONE);
-    digitalWrite(LED, LOW);
-    delay(50);
+void signal_ok() 
+{
+    make_signals(2, 200);
+}  
+
+void signal_error() 
+{
+    make_signals(50, 100);
 }
 
 String get_filename()
@@ -106,10 +107,8 @@ void make_signals(int signal_count, int interval)
 {
 	for (int f = 0; f < signal_count; f++)
 	{
-		digitalWrite(PIN_LED, HIGH);
 		tone(PIN_BUZZ, BUZZ_FREQUENCY, interval/2);
 		delay(interval/2);
-		digitalWrite(PIN_LED, LOW);
 		noTone(PIN_BUZZ);
 		delay(interval/2);
 	}
@@ -233,7 +232,7 @@ void loop() {
             if (millis() - now > 3000) {
                 while (1)
                 {
-                    err();
+                    signal_error();
                 }
             }
         } while (buffer[0] == -1);
@@ -254,7 +253,7 @@ void loop() {
             Serial.println("Error: Bad sync!");
             while (1)
             {
-                err();
+                signal_error();
             }
         }
     }
@@ -263,7 +262,7 @@ void loop() {
         Serial.println("Error: Bad password!");
         while (1)
         {
-            err();
+            signal_error();
         }
     }
 }
