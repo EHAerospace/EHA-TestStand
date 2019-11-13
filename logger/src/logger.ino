@@ -22,12 +22,11 @@
 
 #define PIN_LED 5
 #define PIN_BUZZ 7
-#define PIN_POWER 6
+#define PIN_MOSFET 6
 #define PIN_CLOCK	2
 #define PIN_DATAOUT	3
 
 #define LED 5
-#define MOSFET 2
 #define TONE 7
 
 // Part of the SD pins
@@ -96,9 +95,9 @@ void setup_peripherals()
 	Serial.print("Setting pin modes...");
 	pinMode(PIN_LED, OUTPUT);
 	pinMode(PIN_BUZZ, OUTPUT);
-	pinMode(PIN_POWER, OUTPUT);
+	pinMode(PIN_MOSFET, OUTPUT);
 
-	digitalWrite(PIN_POWER, LOW);
+	digitalWrite(PIN_MOSFET, LOW);
 
 	Serial.println(" Done.");
 }
@@ -152,7 +151,7 @@ void setup() {
     pinMode(LED, OUTPUT);
     blink();
 
-    pinMode(MOSFET, OUTPUT);
+    pinMode(PIN_MOSFET, OUTPUT);
     pinMode(TONE, OUTPUT);
 
     setup_peripherals();
@@ -245,7 +244,7 @@ void loop() {
 
             // OK LAUNCHING & start logger
             Serial.println("Launch GO");
-            digitalWrite(PIN_POWER, HIGH); // Start ignition
+            digitalWrite(PIN_MOSFET, HIGH); // Start ignition
             logger();
 
             while (1);
