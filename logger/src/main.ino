@@ -19,11 +19,11 @@
 */
 
 #if DEBUG_ACTIVE
-	#define LOG(x) 		Serial.print(x)
-	#define LOG_LINE(x) 	Serial.println(x)
+	#define DEBUG_LOG(x) 		Serial.print(x)
+	#define DEBUG_LOG_LINE(x) 	Serial.println(x)
 #else
-	#define LOG(x)
-	#define LOG_LINE(x)
+	#define DEBUG_LOG(x)
+	#define DEBUG_LOG_LINE(x)
 #endif
 
 #define RECORD_SECONDS 30
@@ -36,8 +36,7 @@
 #define PIN_CLOCK	2
 #define PIN_DATAOUT	3
 
-#define LED 5
-#define TONE 7
+#define PIN_BUZZ 7
 
 // Part of the SD pins
 #define PIN_SDCS 10
@@ -54,11 +53,11 @@ int zero_factor;
 
 void blink()
 {
-    tone(TONE, 1000, 50);
-    digitalWrite(LED, HIGH);
+    tone(PIN_BUZZ, 1000, 50);
+    digitalWrite(PIN_LED, HIGH);
     delay(200);
-    noTone(TONE);
-    digitalWrite(LED, LOW);
+    noTone(PIN_BUZZ);
+    digitalWrite(PIN_LED, LOW);
     delay(200);
 }
 
@@ -79,7 +78,7 @@ String get_filename()
 	{
 		i++;
 	}
-        LOG_LINE(String("filename: data") + String(i));
+        DEBUG_LOG_LINE(String("filename: data") + String(i));
 	return String("data") + String(i) + String(".txt");
 }
 
@@ -88,29 +87,29 @@ void setup_peripherals()
 	// Setup the Serial
 	Serial.begin(9600);
 
-        LOG_LINE("EH Launcher ON");
+        DEBUG_LOG_LINE("EH Launcher ON");
 
 	while (!Serial);
-	LOG_LINE("Serial initialized.");
+	DEBUG_LOG_LINE("Serial initialized.");
 
 	// Setup SD card
-	LOG("Initializing SD card...");
+	DEBUG_LOG("Initializing SD card...");
         while (!SD.begin(PIN_SDCS))
 	{
-		LOG_LINE("SD Failed!");
+		DEBUG_LOG_LINE("SD Failed!");
                 make_signals(5, 50);
 	}
-	LOG_LINE("Done.");
+	DEBUG_LOG_LINE("Done.");
 
 	// Setup pins
-	LOG("Setting pin modes...");
+	DEBUG_LOG("Setting pin modes...");
 	pinMode(PIN_LED, OUTPUT);
 	pinMode(PIN_BUZZ, OUTPUT);
 	pinMode(PIN_MOSFET, OUTPUT);
 
 	digitalWrite(PIN_MOSFET, LOW);
 
-	LOG_LINE(" Done.");
+	DEBUG_LOG_LINE(" Done.");
 }
 
 void make_signals(int signal_count, int interval)
@@ -136,14 +135,14 @@ void take_samples(HX711& scale, File& file, int sample_count)
 void logger() 
 { 
 	// Wait until the activation signal is on, and take the specified samples
-	LOG_LINE("Starting sampling routine");
+	DEBUG_LOG_LINE("Starting sampling routine");
 	take_samples(scale, file, 80*RECORD_SECONDS);
 
 	// Closes the file:
 	file.print("Final timestamp: ");
 	file.println(millis());
 	file.close();
-	LOG("Program finalized"); 
+	DEBUG_LOG("Program finalized"); 
 	signal_ok();
 }
 
@@ -155,26 +154,26 @@ void setup() {
     // Serial for xrf radio
     xrf.begin(9600);
 
-    LOG_LINE("EH Launcher ON");
+    DEBUG_LOG_LINE("EH Launcher ON");
 
     // GPIO
-    pinMode(LED, OUTPUT);
+    pinMode(PIN_LED, OUTPUT);
     blink();
 
     pinMode(PIN_MOSFET, OUTPUT);
-    pinMode(TONE, OUTPUT);
+    pinMode(PIN_BUZZ, OUTPUT);
 
     setup_peripherals();
 
     // Prepare the scale and log the calculated scale factor to the serial
-    LOG_LINE("Calibrating sensor...");
+    DEBUG_LOG_LINE("Calibrating sensor...");
     scale.set_scale();
     scale.tare();			//Reset the scale to
     zero_factor = scale.read_average(); //Get a baseline reading
 
     make_signals(10, 500);
-    LOG_LINE();
-    LOG("Creating log file...");
+    DEBUG_LOG_LINE();
+    DEBUG_LOG("Creating log file...");
     // Create the file and add the header
     String filename = get_filename();
     file = SD.open(filename.c_str(), FILE_WRITE);
@@ -183,16 +182,16 @@ void setup() {
     file.print("Starting timestamp: ");
     file.println(millis());
     file.println("From lecture position:");
-    LOG_LINE(" Done.");
+    DEBUG_LOG_LINE(" Done.");
 
-    LOG("ReferenceValue = "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects.
-    LOG_LINE(zero_factor);
+    DEBUG_LOG("ReferenceValue = "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects.
+    DEBUG_LOG_LINE(zero_factor);
 }
 
 void loop() {
 
     do {
-        // LOG_LINE(xrf.read());
+        // DEBUG_LOG_LINE(xrf.read());
         buffer[0] = xrf.read();
     }
     while (buffer[0] != 'P');
@@ -208,14 +207,14 @@ void loop() {
         char val = xrf.read();
         
         if (val == -1) {
-            LOG_LINE("NULl");
+            DEBUG_LOG_LINE("NULL_VALUE");
             continue;
         }         
 
-        LOG("value: ");
-        LOG(val);
-        LOG(" str: ");
-        LOG_LINE(payload[i]);
+        DEBUG_LOG("value: ");
+        DEBUG_LOG(val);
+        DEBUG_LOG(" str: ");
+        DEBUG_LOG_LINE(payload[i]);
 
         finish = i == 14;
 
@@ -233,9 +232,9 @@ void loop() {
         delay(100);
         xrf.print('K');
 
-        LOG_LINE("Launch ORDER");
+        DEBUG_LOG_LINE("Launch ORDER");
         // listen
-        LOG_LINE("Launch OK LSTN GO");
+        DEBUG_LOG_LINE("Launch OK LSTN GO");
         // wait for answer with 1 sec timeout
         long now = millis();
         do {
@@ -253,7 +252,7 @@ void loop() {
         {
 
             // OK LAUNCHING & start logger
-            LOG_LINE("Launch GO");
+            DEBUG_LOG_LINE("Launch GO");
             digitalWrite(PIN_MOSFET, HIGH); // Start ignition
             logger();
 
@@ -261,7 +260,7 @@ void loop() {
         }
         else
         {
-            LOG_LINE("Error: Bad sync!");
+            DEBUG_LOG_LINE("Error: Bad sync!");
             while (1)
             {
                 signal_error();
@@ -270,7 +269,7 @@ void loop() {
     }
     else // bad data, error
     {
-        LOG_LINE("Error: Bad password!");
+        DEBUG_LOG_LINE("Error: Bad password!");
         while (1)
         {
             signal_error();
