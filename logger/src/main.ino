@@ -3,6 +3,8 @@
 #include <SPI.h>
 #include <SD.h>
 
+#include <settings.h>
+
 /* Connect the SD card reader like follows:
  	MOSI - pin 11
  	MISO - pin 12
@@ -16,7 +18,7 @@
  	Buzzer - pin 6
 */
 
-#if 1
+#if DEBUG_ACTIVE
 	#define LOG(x) 		Serial.print(x)
 	#define LOG_LINE(x) 	Serial.println(x)
 #else
