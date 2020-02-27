@@ -10,7 +10,6 @@ void take_samples(HX711& scale, File& file, int sample_count)
 	}
 }
 
-
 void logger() 
 { 
 	// Wait until the activation signal is on, and take the specified samples
@@ -22,7 +21,6 @@ void logger()
 	file.println(millis());
 	file.close();
 	DEBUG_LOG("Program finalized"); 
-	signal_ok();
 }
 
 
