@@ -3,48 +3,49 @@
 
 int radio()
 {
-    do
-    {
-        // DEBUG_LOG_LINE(xrf.read());
-        buffer[0] = xrf.read();
-    } while (buffer[0] != 'P');
-
-    DEBUG_LOG("received char: ");
-    DEBUG_LOG(buffer[0]);
-    DEBUG_LOG(" -- password char: ");
-    DEBUG_LOG_LINE(payload[0]);
-
+//    do
+//    {
+//        // DEBUG_LOG_LINE(xrf.read());
+//        buffer[0] = xrf.read();
+//    } while (buffer[0] != 'P');
+//
+//    DEBUG_LOG("received char: ");
+//    DEBUG_LOG(buffer[0]);
+//    DEBUG_LOG(" -- password char: ");
+//    DEBUG_LOG_LINE(payload[0]);
+//
     // ok we have data, check it
     // wait for answer with 1 sec timeout
-    bool ok = false;
-    bool finish = false;
-    int i = 1;
+    int i = 0;
 
-    while (!finish && !ok)
+    while (i < 15)
     {
         char val = xrf.read();
 
         if (val == -1)
-        {
-            DEBUG_LOG_LINE("NULL_VALUE");
             continue;
-        }
+
 
         DEBUG_LOG("received char: ");
         DEBUG_LOG(val);
         DEBUG_LOG(" -- password char: ");
         DEBUG_LOG_LINE(payload[i]);
 
-        finish = i == 14;
 
-        if (!ok && val == payload[i])
+        if (val == payload[i])
+        {
             i++;
+            continue;
+        }
         else
-            ok = true;
+        {
+            i = 0;
+            DEBUG_LOG_LINE("Bad password! Restarting password exchange.");
+        }
     }
 
     // if (strncmp(buffer+8, payload, 15) == 0)
-    if (ok)
+    if (true)
     {
         // send confirmation
         delay(100);

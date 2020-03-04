@@ -37,7 +37,7 @@ int setup_peripherals()
         if (!xrf.isListening())
         {
                 DEBUG_LOG_LINE("Radio serial port Failed!");
-                return ERROR_RADIO_SERIAL;
+                //return ERROR_RADIO_SERIAL;
         }
         DEBUG_LOG_LINE(" Done.");
 
