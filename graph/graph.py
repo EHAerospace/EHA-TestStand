@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import glob
 
+print("lolaso")
+
 ## Find for data in data/ file
 data_files = glob.glob('data/*')
-
 ## List found files
 for i, fn in enumerate(data_files):
     print('[',i+1,'] ', fn)
