@@ -12,7 +12,7 @@ class ValueOutOfRange(Exception):
 
 data_path = None
 
-parser = argparse.ArgumentParser(description='Makes a graph of blablabla')
+parser = argparse.ArgumentParser()
 parser.add_argument('--data', '-d', nargs='?', action='store', dest='data_path', metavar='data file')
 parser.add_argument('--version', '-v', action='version', version='v1.0')
 args = parser.parse_args()
