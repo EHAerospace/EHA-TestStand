@@ -24,3 +24,4 @@ To compile the project, simply go inside the [logger](logger/) folder and run th
 All the dependencies for this pyhton project can be installed with pip.
 * matplotlib
 * glob
+* argparse
