@@ -26,7 +26,7 @@ int radio()
     // Password receive and check
     while (i < (int)strlen(payload))
     {
-        int val = INPUT_COMMANDS(); // Macro for debugging options
+        int val = INPUT_COMMANDS(); // Receive serial data. Macro for debugging options
 
         if (val == NULL_STRING)
             continue;
@@ -63,7 +63,7 @@ int radio()
     long now = millis();
     do
     {
-        buffer[0] = INPUT_COMMANDS(); // Macro for debugging options
+        buffer[0] = INPUT_COMMANDS(); // Receive serial data. Macro for debugging options
         if (millis() - now > HANDSAKE_WAIT_MS)
         {
             DEBUG_LOG_LINE("Error: No command received");
