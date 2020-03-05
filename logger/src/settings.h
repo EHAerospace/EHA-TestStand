@@ -30,7 +30,7 @@
 #endif
 
 // UART port selection for receive commands (for debug)
-#define INPUT_COMMANDS_UART 0
+#define INPUT_COMMANDS_UART 1
 #if INPUT_COMMANDS_UART == 0
 #define INPUT_COMMANDS() Serial.read()
 #elif INPUT_COMMANDS_UART == 1
