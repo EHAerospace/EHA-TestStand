@@ -44,47 +44,34 @@ int radio()
         }
     }
 
-    // if (strncmp(buffer+8, payload, 15) == 0)
-    if (true)
+    // Send confirmation
+    DEBUG_LOG_LINE("Confirmation routine...");
+    delay(100);
+    xrf.print('K');
+
+
+    // wait for answer with 3 sec timeout
+    long now = millis();
+    do
     {
-        // send confirmation
-        delay(100);
-        xrf.print('K');
+        buffer[0] = xrf.read();
+        if (millis() - now > 3000)
+            return ERROR_NO_CONFIRMATION;
 
-        DEBUG_LOG_LINE("Launch ORDER");
-        // listen
-        DEBUG_LOG_LINE("Launch OK LSTN GO");
-        // wait for answer with 1 sec timeout
-        long now = millis();
-        do
-        {
-            buffer[0] = xrf.read();
-            if (millis() - now > 3000)
-            {
-                return ERROR_NO_CONFIRMATION;
-            }
-        } while (buffer[0] == -1);
+    } while (buffer[0] == -1);
 
-        // ok we have data, check it
-        if (buffer[0] == 'G')
-        {
-
-            // OK LAUNCHING & start logger
-            DEBUG_LOG_LINE("Launch GO");
-            digitalWrite(PIN_MOSFET, HIGH); // Start ignition
-                                            //logger();
-            return 0;
-        }
-        else
-        {
-            DEBUG_LOG_LINE("Error: Bad sync!");
-            return ERROR_BAD_SYNC;
-        }
+    // Now that we have the data, check it is ok
+    if(buffer[0] == 'G')
+    {
+        // OK LAUNCHING & start logger
+        DEBUG_LOG_LINE("Done.");
+        digitalWrite(PIN_MOSFET, HIGH); // Start ignition
+        return 0;
     }
-    else // bad data, error
+    else 
     {
-        DEBUG_LOG_LINE("Error: Bad password!");
-        return ERROR_WRONG_PASSWORD;
+        DEBUG_LOG_LINE("Error: Bad sync!");
+        return ERROR_BAD_SYNC;
     }
 }
 
