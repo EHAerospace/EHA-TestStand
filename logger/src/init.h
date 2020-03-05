@@ -15,6 +15,7 @@ String get_filename()
 
 int setup_peripherals()
 {
+        //
         // Setup the Serial
         Serial.begin(SERIAL_BAUD_RATE);
         while (!Serial)
@@ -24,6 +25,7 @@ int setup_peripherals()
         DEBUG_LOG_LINE("EH Launcher ON");
         DEBUG_LOG_LINE("Serial initialized.");
 
+        //
         // Setup GPIO pins
         DEBUG_LOG("Setting GPIO pins...");
         pinMode(PIN_LED, OUTPUT);
@@ -34,6 +36,7 @@ int setup_peripherals()
         DEBUG_LOG_LINE(" Done.");
         led_and_buzz_normal(true, true);
 
+        //
         // Serial for xrf radio
         DEBUG_LOG("Setting radio module...");
         xrf.begin(RADIO_BAUD_RATE);
@@ -44,6 +47,7 @@ int setup_peripherals()
         }
         DEBUG_LOG_LINE(" Done.");
 
+        //
         // Prepare the scale and log the calculated scale factor to the serial
         DEBUG_LOG("Calibrating sensor...");
         delay(500);
@@ -53,12 +57,13 @@ int setup_peripherals()
                 return ERROR_SCALE;
         }
         scale.set_scale();
-        scale.tare();                       //Reset the scale to
+        scale.tare();                           //Reset the scale to
         int zero_factor = scale.read_average(); //Get a baseline reading
-        DEBUG_LOG(" ReferenceValue = ");     //This can be used to remove the need to tare the scale. Useful in permanent scale projects.
+        DEBUG_LOG(" ReferenceValue = ");        //This can be used to remove the need to tare the scale. Useful in permanent scale projects.
         DEBUG_LOG(zero_factor);
         DEBUG_LOG_LINE(". Done. ");
 
+        //
         // Setup SD card
         DEBUG_LOG("Initializing SD card...");
         if (!SD.begin(PIN_SDCS))
@@ -67,8 +72,10 @@ int setup_peripherals()
                 return ERROR_NO_SD_CARD;
         }
         DEBUG_LOG_LINE(" Done.");
-        DEBUG_LOG("Creating log file... ");
+
+        //
         // Create the file and add the header
+        DEBUG_LOG("Creating log file... ");
         String filename = get_filename();
         logger_file = SD.open(filename.c_str(), FILE_WRITE);
         logger_file.print("Tare: ");
@@ -78,7 +85,7 @@ int setup_peripherals()
         logger_file.println("From lecture position:");
         DEBUG_LOG_LINE(". Done.");
 
-        return 0;
+        return NO_ERROR;
 }
 
 #endif // INIT_H

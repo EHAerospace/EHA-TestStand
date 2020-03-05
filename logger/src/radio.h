@@ -7,7 +7,7 @@ int radio()
     char buffer[16];
     const char *payload = "PAUPER AD ASTRA"; // 15 bytes
 
-    DEBUG_LOG_LINE("Waiting for radio command... ");
+    DEBUG_LOG_LINE("Waiting for password... ");
     //    do
     //    {
     //        // DEBUG_LOG_LINE(xrf.read());
@@ -22,11 +22,13 @@ int radio()
     // ok we have data, check it
     // wait for answer with 1 sec timeout
 
-    while (i < 15)
+    //
+    // Password receive and check
+    while (i < (int)strlen(payload))
     {
         int val = INPUT_COMMANDS(); // Macro for debugging options
 
-        if (val == -1)
+        if (val == NULL_STRING)
             continue;
 
         DEBUG_LOG("received char: ");
@@ -48,39 +50,41 @@ int radio()
     }
 
     // if (strncmp(buffer+8, payload, 15) == 0)
-    DEBUG_LOG_LINE("Launch command received!");
+    DEBUG_LOG_LINE("Password command received!");
 
+    //
     // send confirmation
     delay(100);
     xrf.print('K');
 
-    // listen
-    DEBUG_LOG("Waiting for radio command confirmation... ");
-    // wait for answer with HANDSAKE_WAIT_MS timeout
+    //
+    // listen for commands and wait with HANDSAKE_WAIT_MS timeout
+    DEBUG_LOG("Waiting for command confirmation... ");
     long now = millis();
     do
     {
         buffer[0] = INPUT_COMMANDS(); // Macro for debugging options
         if (millis() - now > HANDSAKE_WAIT_MS)
         {
-            DEBUG_LOG_LINE("Error: No confirmation received");
-            return ERROR_NO_CONFIRMATION;
+            DEBUG_LOG_LINE("Error: No command received");
+            return ERROR_NO_COMMAND_RECEIVED;
         }
-    } while (buffer[0] == -1);
+    } while (buffer[0] == NULL_STRING);
 
-    // ok we have data, check it
+    //
+    // check command received
     switch (buffer[0])
     {
     case 'G':
         // OK LAUNCHING
-        DEBUG_LOG_LINE("Launch GO!!");
+        DEBUG_LOG_LINE("Received command: Launch GO!!");
         digitalWrite(PIN_MOSFET, HIGH); // Start ignition
-        return 0;
+        return NO_ERROR;
         break;
 
     default:
-        DEBUG_LOG_LINE("Error: Bad confirmation received");
-        return ERROR_BAD_SYNC;
+        DEBUG_LOG_LINE("Error: Received command not recognized");
+        return ERROR_COMMAND_NOT_RECOGNIZED;
         break;
     }
 }

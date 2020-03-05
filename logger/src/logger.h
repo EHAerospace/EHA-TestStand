@@ -12,10 +12,12 @@ void take_samples(HX711& scale, File& file, int sample_count)
 
 void logger() 
 { 
-	// Wait until the activation signal is on, and take the specified samples
+	//
+	// Take the specified samples asynchronously
 	DEBUG_LOG_LINE("Starting sampling routine");
 	take_samples(scale, logger_file, 80*RECORD_SECONDS);
 
+	//
 	// Closes the file:
 	logger_file.print("Final timestamp: ");
 	logger_file.println(millis());

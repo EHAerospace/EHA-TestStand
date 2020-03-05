@@ -1,6 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#define NULL_STRING -1
 #define SERIAL_BAUD_RATE 115200
 #define RADIO_BAUD_RATE 9600
 #define HANDSAKE_WAIT_MS 3000
@@ -10,8 +11,8 @@
 #define NO_ERROR 0
 #define BLINK_ALL_WORK_DONE 1
 #define ERROR_NO_SD_CARD 4
-#define ERROR_NO_CONFIRMATION 5
-#define ERROR_BAD_SYNC 6
+#define ERROR_NO_COMMAND_RECEIVED 5
+#define ERROR_COMMAND_NOT_RECOGNIZED 6
 #define ERROR_WRONG_PASSWORD 7
 #define ERROR_RADIO_SERIAL 8
 #define ERROR_SCALE 9
@@ -29,7 +30,7 @@
 #endif
 
 // UART port selection for receive commands (for debug)
-#define INPUT_COMMANDS_UART 1
+#define INPUT_COMMANDS_UART 0
 #if INPUT_COMMANDS_UART == 0
 #define INPUT_COMMANDS() Serial.read()
 #elif INPUT_COMMANDS_UART == 1
