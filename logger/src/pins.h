@@ -14,15 +14,11 @@
  	Buzzer - pin 6
 */
 
-
-#define RECORD_SECONDS 30
-#define AFT_SIGNAL_DELAY_SECS 7
-
 #define PIN_LED 5
 #define PIN_BUZZ 7
 #define PIN_MOSFET 6
-#define PIN_CLOCK	2
-#define PIN_DATAOUT	3
+#define PIN_CLOCK 2
+#define PIN_DATAOUT 3
 #define PIN_BUZZ 7
 
 // Serial pins for radio

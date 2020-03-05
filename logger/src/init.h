@@ -8,8 +8,9 @@ String get_filename()
         {
                 i++;
         }
-        DEBUG_LOG_LINE(String("filename: data") + String(i));
-        return String("data") + String(i) + String(".txt");
+        String filename = String("data") + String(i) + String(".txt");
+        DEBUG_LOG(filename);
+        return filename;
 }
 
 int setup_peripherals()
@@ -18,8 +19,10 @@ int setup_peripherals()
         Serial.begin(SERIAL_BAUD_RATE);
         while (!Serial)
                 ;
-        DEBUG_LOG_LINE("Serial initialized.");
+        DEBUG_LOG_LINE("");
+        DEBUG_LOG_LINE("");
         DEBUG_LOG_LINE("EH Launcher ON");
+        DEBUG_LOG_LINE("Serial initialized.");
 
         // Setup GPIO pins
         DEBUG_LOG("Setting GPIO pins...");
@@ -29,50 +32,51 @@ int setup_peripherals()
         pinMode(PIN_BUZZ, OUTPUT);
         noTone(PIN_BUZZ);
         DEBUG_LOG_LINE(" Done.");
-        blink_led_and_buzz_normal(true, true);
-        
+        led_and_buzz_normal(true, true);
+
         // Serial for xrf radio
         DEBUG_LOG("Setting radio module...");
         xrf.begin(RADIO_BAUD_RATE);
         if (!xrf.isListening())
         {
                 DEBUG_LOG_LINE("Radio serial port Failed!");
-                //return ERROR_RADIO_SERIAL;
+                return ERROR_RADIO_SERIAL;
         }
         DEBUG_LOG_LINE(" Done.");
 
         // Prepare the scale and log the calculated scale factor to the serial
-        DEBUG_LOG_LINE("Calibrating sensor...");
+        DEBUG_LOG("Calibrating sensor...");
+        delay(500);
         if (!scale.is_ready())
         {
-                DEBUG_LOG_LINE("Scale sensor Failed!");
+                DEBUG_LOG_LINE(" Scale sensor Failed!");
                 return ERROR_SCALE;
         }
         scale.set_scale();
         scale.tare();                       //Reset the scale to
-        zero_factor = scale.read_average(); //Get a baseline reading
-        DEBUG_LOG(" Done. ");
-        DEBUG_LOG("ReferenceValue = "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects.
-        DEBUG_LOG_LINE(zero_factor);
+        int zero_factor = scale.read_average(); //Get a baseline reading
+        DEBUG_LOG(" ReferenceValue = ");     //This can be used to remove the need to tare the scale. Useful in permanent scale projects.
+        DEBUG_LOG(zero_factor);
+        DEBUG_LOG_LINE(". Done. ");
 
         // Setup SD card
         DEBUG_LOG("Initializing SD card...");
         if (!SD.begin(PIN_SDCS))
         {
-                DEBUG_LOG_LINE("SD Failed!");
+                DEBUG_LOG_LINE(" SD Failed!");
                 return ERROR_NO_SD_CARD;
         }
-        DEBUG_LOG_LINE("Done.");
-        DEBUG_LOG("Creating log file...");
+        DEBUG_LOG_LINE(" Done.");
+        DEBUG_LOG("Creating log file... ");
         // Create the file and add the header
         String filename = get_filename();
-        file = SD.open(filename.c_str(), FILE_WRITE);
-        file.print("Tare: ");
-        file.println(zero_factor);
-        file.print("Starting timestamp: ");
-        file.println(millis());
-        file.println("From lecture position:");
-        DEBUG_LOG_LINE(" Done.");
+        logger_file = SD.open(filename.c_str(), FILE_WRITE);
+        logger_file.print("Tare: ");
+        logger_file.println(zero_factor);
+        logger_file.print("Starting timestamp: ");
+        logger_file.println(millis());
+        logger_file.println("From lecture position:");
+        DEBUG_LOG_LINE(". Done.");
 
         return 0;
 }

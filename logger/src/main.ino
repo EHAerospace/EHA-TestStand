@@ -11,10 +11,7 @@
 
 HX711 scale(PIN_DATAOUT, PIN_CLOCK);
 SoftwareSerial xrf(PIN_RX, PIN_TX);
-File file;
-const char *payload = "PAUPER AD ASTRA"; // 15 bytes
-char buffer[16];
-int zero_factor;
+File logger_file;
 
 #include <init.h>
 #include <radio.h>
@@ -24,28 +21,26 @@ void setup()
 {
 	// Start peripherals setup
 	int res = setup_peripherals();
-	if (res != 0)
+	if (res != NO_ERROR)
 	{
 		// There has been some error
-		blink_led_and_buzz_error(res, true); //blink and buzz "res" times
+		led_and_buzz_error(res, true); //blink and buzz "res" times
 	}
 
-	blink_led_and_buzz_normal(false, false); // Stop blink and buzz for normal signaling
+	led_and_buzz_normal(false, false); // Stop LED and buzz for normal signaling
 	delay(1000);
 
 	// Start radio standby for radio comm. At this point the igniter can be armed.
-	blink_led_and_buzz_normal(true, false); // Start only blink for normal signaling
+	led_and_buzz_normal(true, false); // Start only LED for normal signaling
 	res = radio();
-	while (res != 0)
+	while (res != NO_ERROR)
 	{
-		blink_led_and_buzz_error(res, true);	//blink and buzz "res" times
-		blink_led_and_buzz_normal(true, false); // Start only blink for normal signaling
-		res = radio();
+		led_and_buzz_error(res, true);	//blink and buzz "res" times
 	}
 
 	logger();
 
-	blink_led_and_buzz_error(ALL_WORK_DONE, true); //blink and buzz 100 times
+	led_and_buzz_error(BLINK_ALL_WORK_DONE, true); //blink and buzz 100 times
 }
 
 void loop()

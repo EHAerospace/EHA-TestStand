@@ -14,12 +14,12 @@ void logger()
 { 
 	// Wait until the activation signal is on, and take the specified samples
 	DEBUG_LOG_LINE("Starting sampling routine");
-	take_samples(scale, file, 80*RECORD_SECONDS);
+	take_samples(scale, logger_file, 80*RECORD_SECONDS);
 
 	// Closes the file:
-	file.print("Final timestamp: ");
-	file.println(millis());
-	file.close();
+	logger_file.print("Final timestamp: ");
+	logger_file.println(millis());
+	logger_file.close();
 	DEBUG_LOG("Program finalized"); 
 }
 
