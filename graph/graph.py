@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import glob
 import os
+import argparse
 
 
 # File select index out of range exception
@@ -9,30 +10,44 @@ class ValueOutOfRange(Exception):
         return 'Value out of range'
 
 
+data_path = None
+
+parser = argparse.ArgumentParser(description='Makes a graph of blablabla')
+parser.add_argument('--data', '-d', nargs='?', action='store', dest='data_path', metavar='data file')
+parser.add_argument('--version', '-v', action='version', version='v1.0')
+args = parser.parse_args()
+
 try:
+    if args.data_path is None:
+        data_path =  os.path.dirname(os.path.abspath(__file__)) + '/../data/*.TXT'
+    else:
+        sel = 0
+        data_path = args.data_path
+
     # Find for data in data/ file
-    data_files = glob.glob(os.path.dirname(os.path.abspath(__file__)) + '/../data/*.TXT')
+    data_files = glob.glob(data_path)
 
     # List found files
-    for i, fn in enumerate(data_files):
-        print('[', i + 1, '] ', os.path.basename(fn))
+    if args.data_path is None:
+        for i, fn in enumerate(data_files):
+            print('[', i + 1, '] ', os.path.basename(fn))
 
-    # Select file
-    sel = None
-    while sel not in range(len(data_files)) or type(sel) != int:
-        try:
-            sel = int(input('Select file > ')) - 1
+        # Select file
+        sel = None
+        while sel not in range(len(data_files)) or type(sel) != int:
+            try:
+                sel = int(input('Select file > ')) - 1
 
-            # Exit if entered value is 0
-            if sel == -1:
-                exit()
+                # Exit if entered value is 0
+                if sel == -1:
+                    exit()
 
-            if sel not in range(len(data_files)):
-                raise ValueOutOfRange()
-        except ValueOutOfRange as e:
-            print(e)
-        except ValueError as e:
-            print(e)
+                if sel not in range(len(data_files)):
+                    raise ValueOutOfRange()
+            except ValueOutOfRange as e:
+                print(e)
+            except ValueError as e:
+                print(e)
 
     # Open data file
     try:
