@@ -1,64 +1,92 @@
 import matplotlib.pyplot as plt
 import glob
+import os
 
-print("lolaso")
 
-## Find for data in data/ file
-data_files = glob.glob('data/*')
-## List found files
-for i, fn in enumerate(data_files):
-    print('[',i+1,'] ', fn)
+# File select index out of range exception
+class ValueOutOfRange(Exception):
+    def __str__(self):
+        return 'Value out of range'
 
-## Select file
-sel = None  
-while sel not in range(len(data_files)) and type(sel) != int:
-    try: 
-        sel = int(input('Select file >')) - 1
-    except:
-        pass
 
-## Open data file
-f = open(data_files[sel], 'r')
+try:
+    # Find for data in data/ file
+    data_files = glob.glob(os.path.dirname(os.path.abspath(__file__)) + '/../data/*.TXT')
 
-## HYPERPARAMETERS 
-DATA_LINE = 3
-ZERO_LINE = 0
+    # List found files
+    for i, fn in enumerate(data_files):
+        print('[', i + 1, '] ', os.path.basename(fn))
 
-## Parse data
-for i, line in enumerate(f):
-    if i == DATA_LINE:
-        data = line.split(':')
-    if i == ZERO_LINE:
-        zero_line = line.split(':')
+    # Select file
+    sel = None
+    while sel not in range(len(data_files)) or type(sel) != int:
+        try:
+            sel = int(input('Select file > ')) - 1
 
-f.close() ## Close data file
+            # Exit if entered value is 0
+            if sel == -1:
+                exit()
 
-## Parse tare value
-for item in zero_line:
+            if sel not in range(len(data_files)):
+                raise ValueOutOfRange()
+        except ValueOutOfRange as e:
+            print(e)
+        except ValueError as e:
+            print(e)
+
+    # Open data file
     try:
-        tare = int(item)
-    except:
-        pass
+        f = open(data_files[sel], 'r')
+    except Exception as e:
+        print(e)
 
-print("Tare, zero value: ", tare)
+    # HYPERPARAMETERS 
+    DATA_LINE = 3
+    ZERO_LINE = 0
 
-## Convert to integers and append to int_data list
-int_data = data
-for i, item in enumerate(data):
+    # Parse data
     try:
-        int_data[i] = int(data[i])
-    except:
-        del int_data[i]
+        for i, line in enumerate(f):
+            if i == DATA_LINE:
+                data = line.split(':')
+            if i == ZERO_LINE:
+                zero_line = line.split(':')
 
-del[int_data[len(int_data)-1]]
+        f.close()  # Close data file
+    except Exception as e:
+        print(e)
 
-## Apply tare
-for i, d in enumerate(int_data):
-    int_data[i] = abs(d)-abs(tare) # With tare
-    int_data[i] /= 20000 # *20000 to convert to Kh¡g and *9.8 for Newtopns
+    f.close()  # Close data file
 
-plt.plot(range(len(int_data)), int_data, 'y')
-plt.grid()
-plt.xlabel("Lecture")
-plt.ylabel("Kgf")
-plt.show()
+    # Parse tare value
+    for item in zero_line:
+        try:
+            tare = int(item)
+        except:
+            pass
+
+    print("Tare, zero value: ", tare)
+
+    # Convert to integers and append to int_data list
+    int_data = data
+    for i, item in enumerate(data):
+        try:
+            int_data[i] = int(data[i])
+        except:
+            del int_data[i]
+
+    del [int_data[len(int_data) - 1]]
+
+    # Apply tare
+    for i, d in enumerate(int_data):
+        int_data[i] = abs(d) - abs(tare)  # With tare
+        int_data[i] /= 20000  # *20000 to convert to Kh¡g and *9.8 for Newtopns
+
+    plt.plot(range(len(int_data)), int_data, 'y')
+    plt.grid()
+    plt.xlabel("Lecture")
+    plt.ylabel("Kgf")
+    plt.show()
+except KeyboardInterrupt as e:
+    print("\nBye!")
+
