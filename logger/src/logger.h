@@ -7,6 +7,7 @@ void take_samples(HX711& scale, File& file, int sample_count)
 	{
 		file.print(scale.read());
 		file.print(":");
+		//file.flush();
 	}
 }
 
