@@ -8,7 +8,7 @@ The logger is an application that runs on a arduino board, and takes care about 
 
 For building and debugging the application PlatformIO (referenced as PIO) is being used. This means that this project can be compiled, uploaded and debugged. 
 
-To compile the project, make sure to all the dependenecies are installed, to do this go to the [logger](logger/) folder and run `./install_dependencies.sh`. After that simply run the following command: `pio run`. To upload the program to the arduino board, after connecting it with a usb cable, you need to run the next command: `pio run --target upload`. For debugging, just type `pio run --target monitor`, and all the `Serial.print(...)` or `Serial.println(...)` calls will print on the console you ran the command.  
+To compile the project, make sure that all the dependencies are installed, to do this go to the [logger](logger/) folder and run `./install_dependencies.sh`. After that simply run the following command: `pio run`. To upload the program to the arduino board, after connecting it with a usb cable, you need to run the next command: `pio run --target upload`. For debugging, just type `pio run --target monitor`, and all the `Serial.print(...)` or `Serial.println(...)` calls will print on the console you ran the command.  
 
 ### Connected Peripherals
 * The most obvious connected peripheral is a scale, which sends all the data to the arduino board via an analog signal. To translate all this analog data the library [HX711](https://github.com/bogde/HX711) is being used. This library is also open source.
