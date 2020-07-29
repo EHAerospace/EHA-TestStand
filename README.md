@@ -1,7 +1,5 @@
 # EHA-TestStand
-This repository contains all the digital resources used for the test stand. This test stand is used to test the rocket boosters and recolect data about the performance it gave.
-
-This repository consists of two little projects: the logger and the ploter. The first project is the responsable for taking all the data and the second one is used to visualize the data recolected.
+Here all the digital resources used for the test stand can be found. Including a documentation showing how to build a working test stand from the schematics. This repository consists of two little projects: the logger and the ploter. The first project is the responsable for taking all the data and the second one is used to visualize the data recolected.
 
 ## Logger
 The logger is an application that runs on a arduino board, and takes care about all the data that is being recolected by the peripherals and then saved on an SD card.
