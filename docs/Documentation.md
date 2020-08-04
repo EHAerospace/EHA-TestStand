@@ -7,3 +7,14 @@ The EHA test stand is a test stand that is meant to be used as a testing ground 
 ## Graph
 
 ## Logger
+The logger is an application that runs on a arduino board, and takes care about all the data that is being recolected by the peripherals and then saved on an SD card. 
+
+### How to build
+This project is composed by both, software and hardware, so instructions for both can be found bellow. 
+
+#### Software
+For building and debugging the softwsare, PlatformIO (referenced as PIO) is being used. This means that this project can be compiled, uploaded and debugged using this tool. 
+
+To compile the project, make sure that all the dependencies are installed, to do this go to the logger folder and run `./install_dependencies.sh`. After that simply run the following command: `pio run`. To upload the program to the arduino board, after connecting it with a usb cable, you need to run the next command: `pio run --target upload`. For debugging, just type `pio run --target monitor`, and all the `Serial.print(...)` or `Serial.println(...)` calls will print on the console you ran the command.
+
+Some error might occur when trying to upload the code to the arduino board as the application might not have all the permissions to write through the serial port. To fix this on a linux system, your user needs to be added to the group dialout. To add your user to that group just type the next command: `groupadd dialout`.
