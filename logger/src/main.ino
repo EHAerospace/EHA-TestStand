@@ -46,6 +46,9 @@ void setup()
 	// Start data acquisition
 	logger();
 
+	delay(30000);
+    digitalWrite(PIN_MOSFET, LOW); // Stop ignitor for security reasons
+
 	//
 	// Finish acquisition
 	led_and_buzz_error(BLINK_ALL_WORK_DONE, true); //blink and buzz for ever

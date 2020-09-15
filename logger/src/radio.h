@@ -79,8 +79,6 @@ int radio()
         // OK LAUNCHING
         DEBUG_LOG_LINE("Received command: Launch GO!!");
         digitalWrite(PIN_MOSFET, HIGH); // Start ignition
-        delay(30000);
-        digitalWrite(PIN_MOSFET, LOW); // Stop ignitor for security reasons
         return NO_ERROR;
         break;
 
