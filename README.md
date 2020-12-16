@@ -21,7 +21,7 @@ To compile the project, make sure that all the dependencies are installed, to do
 ## Graph
 
 ### Dependencies
-All the dependencies for this pyhton project can be installed with pip.
+All the dependencies for this python project can be installed with pip.
 * matplotlib
 * glob
 * argparse
